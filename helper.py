@@ -19,38 +19,32 @@ def debug_print(title, message):
     # Calculate the amount of trailing '-' after the title
     trailing = length_of_line - (6 + len(title))
 
-    # Print the header including title and byte indicators
+    # Prepare strings to print
+    header_str = ''
+    bytes_str = ''
+    hex_str = ''
+
+    # Print the header title
     print('|--- ' + title + ' ' + ('-' * trailing) + '|')
-    print('|', end='')
+
+    # Parse message to bytes and hex and add to proper strings
     for x in range(amount_bytes):
-        if x != amount_bytes - 1:
-            print(' byte ' + str(x + 1) + ' |', end='')
-        else:
-            print(' byte ' + str(x + 1) + ' |')
+        byte_indent = x * 8
+        byte_end = byte_indent + 8
+
+        hex_indent = x * 2
+        hex_end = hex_indent + 2
+
+        header_str += ' byte ' + str(x + 1) + ' |'
+        bytes_str += message_bin[byte_indent:byte_end] + '|'
+        hex_str += '  0x' + message_hex[hex_indent:hex_end] + '  |'
+
+    # Print the final strings
+    print('|' + header_str)
     print('|' + '-' * (length_of_line - 1) + '|')
-
-    # Print the message per byte in binary format
-    print('|', end='')
-    for x in range(amount_bytes):
-        indent = x * 8
-        end = indent + 8
-
-        if x != amount_bytes - 1:
-            print(message_bin[indent:end] + '|', end='')
-        else:
-            print(message_bin[indent:end] + '|')
+    print('|' + bytes_str)
     print('|' + '-' * (length_of_line - 1) + '|')
-
-    # Print the message per byte in hex format
-    print('|', end='')
-    for x in range(amount_bytes):
-        indent = x * 2
-        end = indent + 2
-
-        if x != amount_bytes - 1:
-            print('  0x' + message_hex[indent:end] + '  |', end='')
-        else:
-            print('  0x' + message_hex[indent:end] + '  |')
+    print('|' + hex_str)
     print('|' + '-' * (length_of_line - 1) + '|')
 
 def MSB_to_one(value):

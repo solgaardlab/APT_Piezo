@@ -37,3 +37,6 @@ class MessageGenerator:
             size = data_def[0]
             data = data_def[2]
 
+mgen = MessageGenerator()
+message_ident = mgen.gen_header(0x0002, [0x00, 0x00])
+helper.debug_print('MSG_HW_REQ_INFO', message_ident)
