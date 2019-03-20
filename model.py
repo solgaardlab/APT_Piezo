@@ -19,7 +19,7 @@ class Model:
         # Set values to defaults
         def __init__(self):
             # 0x50 means generic USB device as destination
-            self.destination = Model.SOURCE_DESTINATION["bay0"]
+            self.destination = Model.SOURCE_DESTINATION["rack/motherboard"]
             # 0x01 means main controller as source
             self.source = Model.SOURCE_DESTINATION["host"]
             # 0x01 means the first channel of the controller

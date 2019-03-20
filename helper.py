@@ -1,3 +1,5 @@
+import math
+
 def debug_print(title, message):
     # Prepare printable versions of the message
     message_hex = message.hex()
@@ -6,40 +8,50 @@ def debug_print(title, message):
     # Convert hex to integer
     # Convert integer to binary
     # Strip the '0b' from the binary string, we don't need it
-    message_bin = bin(int(message.hex(), 16))[2:].zfill(48)
+    message_bin = bin(int(message_hex, 16))[2:]
 
-    print('|--- ' + title + ' ' + ('-' * (53 - (len(title) + 5))) + '|')
-    print('|                                                     |')
-    print('| byte 1 | byte 2 | byte 3 | byte 4 | byte 5 | byte 6 |')
-    print('|-----------------------------------------------------|')
+    # Calculate the byte size of the message for proper printing later
+    amount_bytes = math.ceil(len(message_bin) / 8)
+    message_bin = message_bin.zfill(amount_bytes * 8)
 
+    # Calculate the total length of the table line
+    length_of_line = 2 + (amount_bytes * 8) + (amount_bytes - 2)
+    # Calculate the amount of trailing '-' after the title
+    trailing = length_of_line - (6 + len(title))
+
+    # Print the header including title and byte indicators
+    print('|--- ' + title + ' ' + ('-' * trailing) + '|')
     print('|', end='')
-    for x in range(6):
-        end = (x + 1) * 8
-        indent = end - 8
+    for x in range(amount_bytes):
+        if x != amount_bytes - 1:
+            print(' byte ' + str(x + 1) + ' |', end='')
+        else:
+            print(' byte ' + str(x + 1) + ' |')
+    print('|' + '-' * (length_of_line - 1) + '|')
 
-        if x != 5:
+    # Print the message per byte in binary format
+    print('|', end='')
+    for x in range(amount_bytes):
+        indent = x * 8
+        end = indent + 8
+
+        if x != amount_bytes - 1:
             print(message_bin[indent:end] + '|', end='')
         else:
             print(message_bin[indent:end] + '|')
-    print('|-----------------------------------------------------|')
+    print('|' + '-' * (length_of_line - 1) + '|')
 
+    # Print the message per byte in hex format
     print('|', end='')
-    for x in range(6):
-        end = (x + 1) * 2
-        indent = end - 2
+    for x in range(amount_bytes):
+        indent = x * 2
+        end = indent + 2
 
-        if x == 0:
-            indent = 0
-            end = 2
-
-        if x != 5:
+        if x != amount_bytes - 1:
             print('  0x' + message_hex[indent:end] + '  |', end='')
         else:
             print('  0x' + message_hex[indent:end] + '  |')
-
-    print('|-----------------------------------------------------|')
-
+    print('|' + '-' * (length_of_line - 1) + '|')
 
 def MSB_to_one(value):
     # MSB is already set to 1, return original value

@@ -37,8 +37,3 @@ class MessageGenerator:
             size = data_def[0]
             data = data_def[2]
 
-
-message_generator = MessageGenerator()
-message_ident = message_generator.gen_header(0x0223, [0x00, 0x00])
-
-helper.debug_print('MSG_MOD_IDENTIFY', message_ident)
