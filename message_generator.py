@@ -18,11 +18,11 @@ class MessageGenerator:
             # Split data size into lo and hi bytes because Python
             # Doesn't allow for values bigger than 256 to be put in byte arrays
             data_size_bytes = helper.split_bytes_little_endian(params)
-            data_size_hi = data_size_bytes[1]
             data_size_lo = data_size_bytes[0]
+            data_size_hi = data_size_bytes[1]
 
             # Destination bitwise OR'd with 0x80 to integer, flip MSB to 1 to indicate data packet.
-            destination = helper.MSB_to_one(self.model.destination | 0x80)
+            destination = self.model.destination | 0x80
 
             # Create byte array of all separate bytes, this is the header
             return bytearray([action, message, data_size_lo, data_size_hi, destination, self.model.source])
@@ -30,13 +30,23 @@ class MessageGenerator:
         # Create byte array of all separate bytes, this is the header
         return bytearray([action, message, params[0], params[1], self.model.destination, self.model.source])
 
-    def gen_data(self, data_definitions):
-        result = bytearray()
+    def add_word(self, value, header):
+        word_bytes = helper.split_bytes_little_endian(value)
+        word_byte_lo = word_bytes[0]
+        word_byte_hi = word_bytes[1]
 
-        for data_def in data_definitions:
-            size = data_def[0]
-            data = data_def[2]
+        header.append(word_byte_lo)
+        header.append(word_byte_hi)
 
-mgen = MessageGenerator()
-message_ident = mgen.gen_header(0x0002, [0x00, 0x00])
-helper.debug_print('MSG_HW_REQ_INFO', message_ident)
+    def add_dword(self, value, header):
+        dword_bytes = helper.split_bytes_little_endian(value)
+
+        dword_byte_0 = dword_bytes[0]
+        dword_byte_1 = dword_bytes[1]
+        dword_byte_2 = dword_bytes[2]
+        dword_byte_3 = dword_bytes[3]
+
+        header.append(dword_byte_0)
+        header.append(dword_byte_1)
+        header.append(dword_byte_2)
+        header.append(dword_byte_3)

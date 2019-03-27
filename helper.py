@@ -47,20 +47,20 @@ def debug_print(title, message):
     print('|' + hex_str)
     print('|' + '-' * (length_of_line - 1) + '|')
 
-def MSB_to_one(value):
-    # MSB is already set to 1, return original value
-    if value >= (2 ** 7):
-        return value
-
-    # To set the MSB to 1 we add 2 to the power of 8 (one byte) - 1 as an integer value.
-    return value + (2 ** 7)
-
 
 def split_bytes_little_endian(value):
-    # Split value above 256 over two bytes
-    # First byte 0 - 7 (as seen from the right) bitwise AND with the value and 11111111
-    lo = value & 0x00ff
-    # Second byte 7 - 15 (as seen from the right) bit shift to the right 8 times
-    hi = value >> 8
+    amount_bytes = math.ceil(value / 255)
 
-    return lo, hi
+    if amount_bytes == 2:
+        index0 = value & 0x00ff
+        # Second byte 7 - 15 (as seen from the right) bit shift to the right 8 times
+        index1 = value >> 8
+
+        return index0, index1
+    elif amount_bytes == 4:
+        index0 = value & 0x000000ff
+        index1 = value & 0x0000ff00
+        index2 = value & 0x00ff0000
+        index3 = value >> 24
+
+        return index0, index1, index2, index3

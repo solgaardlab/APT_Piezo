@@ -1,7 +1,5 @@
 from pyftdi.ftdi import Ftdi
 import time
-import helper
-import message_generator
 
 
 class USBBridge:
@@ -40,15 +38,3 @@ class USBBridge:
         ftdi.set_rts(True)
 
         return ftdi
-
-
-usb_bridge = USBBridge()
-device = usb_bridge.get_device()
-
-mgen = message_generator.MessageGenerator()
-message_ident = mgen.gen_header(0x0002, [0x00, 0x00])
-
-helper.debug_print('MSG_HW_REQ_INFO', message_ident)
-device.write_data(message_ident)
-
-helper.debug_print('RESPONSE', device.read_data(90))
