@@ -1,5 +1,6 @@
 from string import Template
 import protocol.message_builder as message_builder
+import math
 
 
 class Module:
@@ -24,7 +25,7 @@ class Module:
     def move(self, travel_percentage):
         # output position is a 0 - 100% value based on 0 - 32767 decimal values
         # calculates the total movement value and creates a hex value from this
-        outputpos = hex(travel_percentage * 32767)
+        outputpos = math.floor(travel_percentage * 32767)
 
         # Build a pz_set_outputpos message (0x0646), it has a data size of 4 (0x04)
         message = self.mbuilder.gen_header(0x0646, 0x04, self.destination)

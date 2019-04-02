@@ -46,7 +46,7 @@ def debug_print(title, message):
     print('|' + bytes_str)
     print('|' + '-' * (length_of_line - 1) + '|')
     print('|' + hex_str)
-    print('|' + '-' * (length_of_line - 1) + '|')
+    print('|' + '-' * (length_of_line - 1) + '|\n\n')
 
 
 def split_bytes_little_endian(value, size):
