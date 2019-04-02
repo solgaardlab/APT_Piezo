@@ -13,9 +13,13 @@ class Module:
         self.destination = controller.SOURCE_DESTINATION[destination.substitute(channel=channel)]
         self.mbuilder = message_builder.MessageBuilder()
 
+        # Build a message that sets the Piezo to zero position
+        zeropos_message = self.mbuilder.gen_header(0x0658, [0x01, 0x00], self.destination)
+        self.controller.write_data(zeropos_message)
+
         # Build a message that sets the Piezo control mode to closed loop mode
-        message = self.mbuilder.gen_header(0x0640, [0x01, 0x02], self.destination)
-        self.controller.write_data(message)
+        poscontrol_message = self.mbuilder.gen_header(0x0640, [0x01, 0x02], self.destination)
+        self.controller.write_data(poscontrol_message)
 
     def move(self, travel_percentage):
         # output position is a 0 - 100% value based on 0 - 32767 decimal values

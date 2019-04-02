@@ -1,6 +1,6 @@
 from interface import controller, module
 from protocol import message_builder
-
+from string import Template
 
 class APT:
     def __init__(self):
@@ -12,8 +12,7 @@ class APT:
         self.controller.write_data(message)
         data = self.controller.read_data(90, 1)
 
-        self.modules = dict()
-
         # Last byte of response is the amount of channels available, each channel is a motor module
         for x in range(data[len(data) - 1]):
-            self.modules[x] = module.Module(controller, x)
+            module_name = Template('module$indent')
+            self.__setattr__(module_name.substitute(indent=x), module.Module(controller, x))
