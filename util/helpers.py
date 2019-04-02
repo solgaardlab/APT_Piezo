@@ -36,7 +36,11 @@ def debug_print(title, message):
         hex_indent = x * 2
         hex_end = hex_indent + 2
 
-        header_str += ' byte ' + str(x + 1) + ' |'
+        if x >= 9:
+            header_str += ' byte' + str(x + 1) + ' |'
+        else:
+            header_str += ' byte ' + str(x + 1) + ' |'
+
         bytes_str += message_bin[byte_indent:byte_end] + '|'
         hex_str += '  0x' + message_hex[hex_indent:hex_end] + '  |'
 
