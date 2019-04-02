@@ -1,5 +1,6 @@
 import math
 
+
 def debug_print(title, message):
     # Prepare printable versions of the message
     message_hex = message.hex()
@@ -48,16 +49,13 @@ def debug_print(title, message):
     print('|' + '-' * (length_of_line - 1) + '|')
 
 
-def split_bytes_little_endian(value):
-    amount_bytes = math.ceil(value / 255)
-
-    if amount_bytes == 2:
+def split_bytes_little_endian(value, size):
+    if size == 2:
         index0 = value & 0x00ff
-        # Second byte 7 - 15 (as seen from the right) bit shift to the right 8 times
         index1 = value >> 8
 
         return index0, index1
-    elif amount_bytes == 4:
+    elif size == 4:
         index0 = value & 0x000000ff
         index1 = value & 0x0000ff00
         index2 = value & 0x00ff0000

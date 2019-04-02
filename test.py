@@ -1,15 +1,13 @@
-import usb_bridge as bridge
-import message_generator
-import helper
+from interface import controller, module
+from protocol import message_builder
 
-# usb = bridge.USBBridge()
-# device = usb.get_device()
+controller = controller.Controller()
+module1 = module.Module(controller, 0)
+module2 = module.Module(controller, 2)
+module3 = module.Module(controller, 3)
 
-mgen = message_generator.MessageGenerator()
-message_ident = mgen.gen_header(0x0005, [0x00, 0x00])
+mbuilder = message_builder.MessageBuilder()
+message = mbuilder.gen_header(0x0005, [0x00, 0x00], 0x11)
 
-helper.debug_print('MSG_HW_REQ_INFO', message_ident)
-
-# device.write_data(message_ident)
-
-# helper.debug_print('RESPONSE', device.read_data(90))
+controller.write_data(message)
+controller.read_data(90, 1)
