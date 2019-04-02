@@ -11,10 +11,10 @@ class Module:
         # Create template string for channel, get channel value from controller interface's constant
         destination = Template('bay${channel}')
         self.destination = controller.SOURCE_DESTINATION[destination.substitute(channel=channel)]
-        self.message_builder = message_builder.MessageBuilder()
+        self.mbuilder = message_builder.MessageBuilder()
 
         # Build a message that sets the Piezo control mode to closed loop mode
-        message = self.message_builder.gen_header(0x0640, [0x01, 0x02], self.destination)
+        message = self.mbuilder.gen_header(0x0640, [0x01, 0x02], self.destination)
         self.controller.write_data(message)
 
     def move(self, travel_percentage):
@@ -23,9 +23,9 @@ class Module:
         outputpos = hex(travel_percentage * 32767)
 
         # Build a pz_set_outputpos message (0x0646), it has a data size of 4 (0x04)
-        message = self.message_builder.gen_header(0x0646, 0x04, self.destination)
+        message = self.mbuilder.gen_header(0x0646, 0x04, self.destination)
         # Add the channel indent to the message, 01 by default, 2 bytes in size
-        message = self.message_builder.add_word(0x0001, message)
+        message = self.mbuilder.add_word(0x0001, message)
         # Ad the output position to the message, as calculated, 2 bytes in size
-        message = self.message_builder.add_word(outputpos, message)
+        message = self.mbuilder.add_word(outputpos, message)
         self.controller.write_data(message)
