@@ -16,4 +16,4 @@ class APT:
         # Last byte of response is the amount of channels available, each channel is a motor module
         for x in range(data[len(data) - 1]):
             module_name = Template('module$indent')
-            self.__setattr__(module_name.substitute(indent=x), module.Module(controller, x))
+            setattr(self, module_name.substitute(indent=x), module.Module(controller, x))
