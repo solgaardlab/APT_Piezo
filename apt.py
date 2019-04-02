@@ -2,6 +2,7 @@ from interface import controller, module
 from protocol import message_builder
 from string import Template
 
+
 class APT:
     def __init__(self):
         self.controller = controller.Controller()
