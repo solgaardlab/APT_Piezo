@@ -21,16 +21,21 @@ class Message:
             destination = destination | 0x80
 
             # Create byte array of all separate bytes, this is the header
-            self.data_message = True
             self.header = bytearray([action, message, data_size_lo, data_size_hi, destination, 0x01])
             self.data = bytearray()
+        elif len(params) > 2:
+            raise AssertionError("Too many parameters for header only communication (limit 2)")
         else:
             # Create byte array of all separate bytes, this is the header
             self.header = bytearray([action, message, params[0], params[1], destination, 0x01])
 
     def add_word(self, value):
-        if not self.data_message:
+        if not hasattr(self, "data"):
             raise AssertionError("Cannot add data to a header only communication")
+        elif value > 65535:
+            raise ValueError("Value for word too high (max 65535)")
+        elif value < 0:
+            raise ValueError("Value for word can't be negative")
 
         word_bytes = helpers.split_bytes_little_endian(value, 2)
         word_byte_lo = word_bytes[0]
@@ -40,8 +45,12 @@ class Message:
         self.data.append(word_byte_hi)
 
     def add_dword(self, value):
-        if not self.data_message:
+        if not hasattr(self, "data"):
             raise AssertionError("Cannot add data to a header only communication")
+        elif value > 4294967295:
+            raise ValueError("Value for dword too high (max 4294967295)")
+        elif value < 0:
+            raise ValueError("Value for dword can't be negative")
 
         dword_bytes = helpers.split_bytes_little_endian(value, 4)
 
@@ -56,8 +65,10 @@ class Message:
         self.data.append(dword_byte_3)
 
     def add_short(self, value):
-        if not self.data_message:
+        if not hasattr(self, "data"):
             raise AssertionError("Cannot add data to a header only communication")
+        elif value < -32768 or value > 32768:
+            raise ValueError("Value for short out of bounds (min -32768, max 32768")
         elif value < 0:
             byte1 = 255
             byte2 = 256 + value
@@ -72,7 +83,7 @@ class Message:
         if not hasattr(self, "data"):
             return self.header
         else:
-            message = self.header
+            message = bytearray(self.header)
 
             for x in range(len(self.data)):
                 message.append(self.data[x])
@@ -80,7 +91,7 @@ class Message:
             return message
 
     def clear_data(self):
-        if not self.data_message:
-            raise AssertionError("Cannot clear data to of header only communication")
+        if not hasattr(self, "data"):
+            raise AssertionError("Cannot clear data of header only communication")
 
         self.data = bytearray()
