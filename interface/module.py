@@ -13,13 +13,19 @@ class Module:
         destination = Template('bay${channel}')
         self.destination = controller.SOURCE_DESTINATION[destination.substitute(channel=channel)]
 
+        # Supported messages, not initialised yet, they're initialised as neededd
+        self.closed_loop_enable_message = None
+        self.closed_loop_disable_message = None
+        self.zeropos_message = None
+        self.move_message = None
+
         # Set piezo to zero, enable closed loop mode
         self.zero()
         self.set_closed_loop(True)
 
     def move(self, travel_percentage):
         # Build a pz_set_outputpos message (0x0646), it has a data size of 4 (0x04)
-        if not hasattr(self, "move_message"):
+        if self.move_message is None:
             self.move_message = Message(0x0646, 0x04, self.destination)
 
         # Clear previous message data
@@ -38,16 +44,16 @@ class Module:
 
     def zero(self):
         # Build a message that sets the Piezo to zero position if it doesn't yet exist
-        if not hasattr(self, "zeropos_message"):
+        if self.zeropos_message is None:
             self.zeropos_message = Message(0x0658, [0x01, 0x00], self.destination)
 
         self.controller.write_data(self.zeropos_message.get_data())
 
     def set_closed_loop(self, enable):
-        if not hasattr(self, "closed_loop_disable_message"):
+        if self.closed_loop_disable_message is None:
             # Build a message that sets the Piezo control mode to open loop mode
             self.closed_loop_disable_message = Message(0x0640, [0x01, 0x01], self.destination)
-        elif not hasattr(self, "closed_loop_enable_message"):
+        elif self.closed_loop_enable_message is None:
             # Build a message that sets the Piezo control mode to closed loop mode
             self.closed_loop_enable_message = Message(0x0640, [0x01, 0x02], self.destination)
 
