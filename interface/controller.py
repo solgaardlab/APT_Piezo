@@ -43,23 +43,23 @@ class Controller:
     # Thorlabs/FTDI vendor code is 0x0403, product ID for the Thorlabs
     # controllers is 0xfaf0
     def __init__(self):
-        ftdi = Ftdi()
-        ftdi.open(vendor=0x0403, product=0xfaf0)
+        connection = Ftdi()
+        connection.open(vendor=0x0403, product=0xfaf0)
 
         # As protocol describes set the baudrate to 115200, data definition to 8 data bytes, 1 stop bit, no parity
-        ftdi.set_baudrate(115200)
-        ftdi.set_line_property(self.DATA_BYTES["8"], self.STOP_BITS["1"], self.PARITY["none"])
+        connection.set_baudrate(115200)
+        connection.set_line_property(self.DATA_BYTES["8"], self.STOP_BITS["1"], self.PARITY["none"])
 
         # Pre-purge and post-purge rest, purge RX/TX buffers of the FTDI chip
         time.sleep(0.05)
-        ftdi.purge_buffers()
+        connection.purge_buffers()
         time.sleep(0.05)
 
         # Set flow control to RTS/CTS and flag RTS as true
-        ftdi.set_flowctrl("hw")
-        ftdi.set_rts(True)
+        connection.set_flowctrl("hw")
+        connection.set_rts(True)
 
-        self.interface = ftdi
+        self.interface = connection
 
     def write_data(self, data):
         self.interface.write_data(data)
