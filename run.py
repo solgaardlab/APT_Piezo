@@ -16,3 +16,5 @@ module1.move(0.5)
 time.sleep(10)
 # Re-zero Piezo
 module1.zero()
+# Disconnect from controller
+controller.disconnect()
