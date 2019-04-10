@@ -53,7 +53,7 @@ class Module:
         if self.closed_loop_disable_message is None:
             # Build a message that sets the Piezo control mode to open loop mode
             self.closed_loop_disable_message = Message(0x0640, [0x01, 0x01], self.destination)
-        elif self.closed_loop_enable_message is None:
+        if self.closed_loop_enable_message is None:
             # Build a message that sets the Piezo control mode to closed loop mode
             self.closed_loop_enable_message = Message(0x0640, [0x01, 0x02], self.destination)
 
