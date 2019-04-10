@@ -1,11 +1,11 @@
-import apt
+from apt import APT
 import time
 
 
-APT = apt.APT()
+controller = APT()
 
-print(APT.modules)
-module1 = APT.modules["module1"]
+print(controller.modules)
+module1 = controller.modules["module1"]
 
 # Sleep to make sure zero-ing finished
 # FIXME: replace with waiting for zero'ing confirmation
