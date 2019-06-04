@@ -9,7 +9,6 @@ class APT:
         self.controller = Controller()
         self.modules = dict()
 
-        # Last byte of response is the amount of channels available, each channel is a motor module
         for x in range(10):
             destination = self.controller.SOURCE_DESTINATION["rack/motherboard"]
             bay_used_message = Message(0x0060, [x, 0x00], destination)
@@ -19,7 +18,7 @@ class APT:
 
             if response[2] == 0x01:
                 module_name = Template('module$indent')
-                self.modules[module_name.substitute(indent=x+1)] = Module(self.controller, x)
+                self.modules[module_name.substitute(indent=x+1)] = Module(self.controller, x, 30)
 
     def disconnect(self):
         disconnect_message = Message(0x0002, [0x00, 0x00], 0x11)

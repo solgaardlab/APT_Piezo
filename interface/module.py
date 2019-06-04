@@ -5,7 +5,7 @@ import math
 
 class Module:
 
-    def __init__(self, controller, channel):
+    def __init__(self, controller, channel, max_travel):
         # Save reference to controller interface
         self.controller = controller
 
@@ -19,11 +19,14 @@ class Module:
         self.zeropos_message = None
         self.move_message = None
 
-        # Set piezo to zero, enable closed loop mode
-        self.zero()
-        self.set_closed_loop(True)
+        # Set maximum piezo travel
+        self.max_travel = max_travel
 
-    def move(self, travel_percentage):
+        # Enable closed loop mode, set piezo to zero
+        self.set_closed_loop(True)
+        self.zero()
+
+    def move(self, travel_micron):
         # Build a pz_set_outputpos message (0x0646), it has a data size of 4 (0x04)
         if self.move_message is None:
             self.move_message = Message(0x0646, 0x04, self.destination)
@@ -31,8 +34,12 @@ class Module:
         # Clear previous message data
         self.move_message.clear_data()
 
+        # limit movement between maximum movement and zero
+        travel_micron = max(min(self.max_travel, travel_micron), 0)
+
         # output position is a 0 - 100% value based on 0 - 32767 decimal values
         # calculates the total movement value and creates a hex value from this
+        travel_percentage = travel_micron / self.max_travel
         outputpos = math.floor(travel_percentage * 32767)
 
         # Add the channel indent to the message, 01 by default, 2 bytes in size
