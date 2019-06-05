@@ -26,7 +26,7 @@ class Module:
         self.set_closed_loop(True)
         self.zero()
 
-    def move(self, travel_micron):
+    def move(self, position):
         # Build a pz_set_outputpos message (0x0646), it has a data size of 4 (0x04)
         if self.move_message is None:
             self.move_message = Message(0x0646, 0x04, self.destination)
@@ -35,7 +35,7 @@ class Module:
         self.move_message.clear_data()
 
         # limit movement between maximum movement and zero
-        travel_micron = max(min(self.max_travel, travel_micron), 0)
+        travel_micron = max(min(self.max_travel, position), 0)
 
         # output position is a 0 - 100% value based on 0 - 32767 decimal values
         # calculates the total movement value and creates a hex value from this
