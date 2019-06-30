@@ -19,19 +19,23 @@ designed to be compatible with the BPC-303 controller through USB connection.
 
 ### How to use
 
+The library should be able to automatically detect both the ThorLabs BPC-303 controller as well as a ThorLabs USB photosensor. These devices will have to be plugged in through USB ports on the host computer. Once plugged in and powered on the library can be ran and used as the user needs.
+
 ```python
-from apt import APT
+from apt import APT // Controller
+from pps import PPS // Photosensor
 
-
-controller = APT()
-module1 = controller.modules["module1"]
+controller = APT() // Initialize controller
+sensor = PPS() // Initialize photosensor
+module1 = controller.modules["module1"] // Select modules each module is initialised as moduleX where X is the module number
 module2 = controller.modules["module2"]
 module3 = controller.modules["module3"]
 
-module1.move(0.5)
+module1.move(0.5) // Amount of microns to move
 module2.move(0.1)
 module3.move(0.3)
 
+value = pps.read; // Read value from the power sensor
 module1.move(0)
 ```
 
